@@ -37,7 +37,7 @@ namespace HttpServer.Headers
         #region IHeader Members
 
         /// <summary>
-        /// Gets header name
+        /// Gets or set header name
         /// </summary>
         public string Name { get; set; }
 

@@ -184,7 +184,7 @@ namespace HttpServer.Messages
             HeadersSent(this, EventArgs.Empty);
         }
         /// <summary>
-        /// 发送文件。
+        /// 发送文本文件。
         /// </summary>
         /// <param name="context"></param>
         /// <param name="response"></param>
@@ -208,6 +208,8 @@ namespace HttpServer.Messages
                         }
                     }
                 }
+                //SendFileHeader sf = new SendFileHeader("test.csv");
+                //context.Response.Add("Content-disposition",sf);
                 SendHeaders(context, response);
 
                 var buffer = new byte[4196];
@@ -221,6 +223,49 @@ namespace HttpServer.Messages
                 _logger.Error("Failed to send body through context stream.", err);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="response"></param>
+        /// <param name="attachmentname"></param>
+        /// <param name="stream"></param>
+        /// <param name="bom">UTF8_BOM:0xEF 0xBB 0xBF</param>
+        public void SendFile(IHttpContext context, IResponse response, string attachmentname, Stream stream, byte[] bom) {
+            stream.Flush();
+            stream.Seek(0, SeekOrigin.Begin);
+            response.ContentLength.Value = stream.Length;
+            //
+            string oldctvalue = response.ContentType.Value;
+            response.ContentType.Value = "application/octet-stream";
+
+            //
+            string fname = System.Web.HttpUtility.UrlEncode(attachmentname);
+            context.Response.Add("Content-disposition", new SendFileHeader(fname));
+            //if (context.Response.Encoding is UTF8Encoding) {
+            //    stream.Position = 0;
+            //    //跳过前面三个字节的BOM
+            //    if (stream.ReadByte() == 0xEF && stream.ReadByte() == 0xBB && stream.ReadByte() == 0xBF) {
+            //        stream.Seek(3, SeekOrigin.Begin);
+            //        response.ContentLength.Value = stream.Length - 3;
+            //    }
+            //}
+            SendHeaders(context, response);
+            var buffer = new byte[4196];
+            int bytesRead = stream.Read(buffer, 0, 4196);
+            bool addbom = (bom != null && bom.Length > 0);
+            while (bytesRead > 0) {
+                if (addbom) {
+                    addbom = false;
+                    context.Stream.Write(bom, 0, bom.Length);
+                }
+                context.Stream.Write(buffer, 0, bytesRead);
+                bytesRead = stream.Read(buffer, 0, 4196);
+            }
+            response.ContentType.Value = oldctvalue;
+        }
+
+    
         public void SendErrorPage(IHttpContext context, IResponse response, Exception exception)
         {
             string htmlTemplate = @"<html>
