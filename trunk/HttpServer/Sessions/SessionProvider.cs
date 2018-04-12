@@ -22,7 +22,7 @@ namespace HttpServer.Sessions
         {
             _server = server;
             _store = store;
-            _server.RequestReceived += OnRequest;
+            _server.InternalPrepareRequest += OnRequest;
             ResponseWriter.HeadersSent += OnHeaderSent;
         }
 
@@ -36,7 +36,7 @@ namespace HttpServer.Sessions
         public SessionProvider(Server server)
         {
             _server = server;
-            _server.PrepareRequest += OnRequest;
+            _server.InternalPrepareRequest += OnRequest;
             _store = new SessionFileStore(server.ServerName);
             ResponseWriter.HeadersSent += OnHeaderSent;
         }
