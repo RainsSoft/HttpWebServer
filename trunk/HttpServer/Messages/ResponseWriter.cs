@@ -70,8 +70,12 @@ namespace HttpServer.Messages
             Headers.ContentTypeHeader head = new ContentTypeHeader("Content-Type");
             head.Value = "text/xml; charset=utf-8";
             context.Response.ContentType = head;
+
             context.Response.ContentLength.Value = buf.Length;
+            context.Response.Add("Pragma", new PragmaHeader());
+            context.Response.Add("Expires", new ExpiresHeader());
             context.Response.Body.Write(buf, 0, buf.Length);
+
             Send(context, context.Response);
         }
         public void SendJson(IHttpContext context, string jsonString) {

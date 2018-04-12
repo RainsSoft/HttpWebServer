@@ -66,68 +66,67 @@ namespace HttpServer.Headers
         /// <summary>
         /// Gets header name
         /// </summary>
-        public string Name
-        {
+        public string Name {
             get { return NAME; }
         }
 
-        public string HeaderValue
-        {
+        public string HeaderValue {
             get { return "NotImplementedYet"; }
         }
 
         #endregion
 
+
+    }
+    /// <summary>
+    /// 支持火狐浏览器过期头
+    /// </summary>
+    public class PragmaHeader : IHeader
+    {
         /// <summary>
-        /// 支持火狐浏览器过期头
+        /// Header name
         /// </summary>
-        public class PragmaHeader : IHeader
-        {
-            /// <summary>
-            /// Header name
-            /// </summary>
-            public const string NAME = "Pragma";
+        public const string NAME = "Pragma";
 
-            #region IHeader Members
+        #region IHeader Members
 
-            /// <summary>
-            /// Gets header name
-            /// </summary>
-            public string Name {
-                get { return NAME; }
-            }
-
-            public string HeaderValue {
-                get { return "no-cache"; }
-            }
-
-            #endregion
-        }
         /// <summary>
-        /// 支持IE浏览器过期头
+        /// Gets header name
         /// </summary>
-        public class ExpiresHeader : IHeader
-        {
-
-            /// <summary>
-            /// Header name
-            /// </summary>
-            public const string NAME = "Expires";
-
-            #region IHeader Members
-
-            /// <summary>
-            /// Gets header name
-            /// </summary>
-            public string Name {
-                get { return NAME; }
-            }
-
-            public string HeaderValue {
-                get { return "Thu, 01 Jan 1970 00:00:00 GMT"; }
-            }
-
-            #endregion
+        public string Name {
+            get { return NAME; }
         }
+
+        public string HeaderValue {
+            get { return "no-cache"; }
+        }
+
+        #endregion
+    }
+    /// <summary>
+    /// 支持IE浏览器过期头
+    /// </summary>
+    public class ExpiresHeader : IHeader
+    {
+
+        /// <summary>
+        /// Header name
+        /// </summary>
+        public const string NAME = "Expires";
+
+        #region IHeader Members
+
+        /// <summary>
+        /// Gets header name
+        /// </summary>
+        public string Name {
+            get { return NAME; }
+        }
+
+        public string HeaderValue {
+            get { return "Thu, 01 Jan 1970 00:00:00 GMT"; }
+        }
+
+        #endregion
     }
 }
