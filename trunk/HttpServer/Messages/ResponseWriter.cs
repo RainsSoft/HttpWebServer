@@ -164,7 +164,44 @@ namespace HttpServer.Messages
             Send(context, sb.ToString(), response.Encoding);
             HeadersSent(this, EventArgs.Empty);
         }
+        /// <summary>
+        /// 发送文件。
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="response"></param>
+        /// <param name="stream"></param>
+        public void SendFile(IHttpContext context, IResponse response, Stream stream) {
+            try {
+                stream.Flush();
+                stream.Seek(0, SeekOrigin.Begin);
 
+                response.ContentLength.Value = stream.Length;
+                if (context.Response.Encoding is UTF8Encoding) {
+                    if (context.Response.ContentType.Value.StartsWith("text/plain")
+                        || context.Response.ContentType.Value.StartsWith("text/html")
+                        || context.Response.ContentType.Value.StartsWith("text/xml")) {
+
+                        stream.Position = 0;
+                        //跳过前面三个字节的BOM
+                        if (stream.ReadByte() == 0xEF && stream.ReadByte() == 0xBB && stream.ReadByte() == 0xBF) {
+                            stream.Seek(3, SeekOrigin.Begin);
+                            response.ContentLength.Value = stream.Length - 3;
+                        }
+                    }
+                }
+                SendHeaders(context, response);
+
+                var buffer = new byte[4196];
+                int bytesRead = stream.Read(buffer, 0, 4196);
+                while (bytesRead > 0) {
+                    context.Stream.Write(buffer, 0, bytesRead);
+                    bytesRead = stream.Read(buffer, 0, 4196);
+                }
+            }
+            catch (Exception err) {
+                _logger.Error("Failed to send body through context stream.", err);
+            }
+        }
         public void SendErrorPage(IHttpContext context, IResponse response, Exception exception)
         {
             string htmlTemplate = @"<html>
