@@ -94,9 +94,9 @@ namespace HttpServer.Modules
         public void AddDefaultMimeTypes()
         {
             ContentTypes.Add("default", new ContentTypeHeader("application/octet-stream"));
-            ContentTypes.Add("txt", new ContentTypeHeader("text/plain"));
-            ContentTypes.Add("html", new ContentTypeHeader("text/html"));
-            ContentTypes.Add("htm", new ContentTypeHeader("text/html"));
+            ContentTypes.Add("txt", new ContentTypeHeader("text/plain;charset=UTF-8"));
+            ContentTypes.Add("html", new ContentTypeHeader("text/html;charset=UTF-8"));
+            ContentTypes.Add("htm", new ContentTypeHeader("text/html;charset=UTF-8"));
             ContentTypes.Add("jpg", new ContentTypeHeader("image/jpg"));
             ContentTypes.Add("jpeg", new ContentTypeHeader("image/jpg"));
             ContentTypes.Add("bmp", new ContentTypeHeader("image/bmp"));
@@ -137,11 +137,12 @@ namespace HttpServer.Modules
         /// <param name="stream">File stream</param>
         private void SendFile(IHttpContext context, IResponse response, Stream stream)
         {
-            response.ContentLength.Value = stream.Length;
+            //response.ContentLength.Value = stream.Length;
 
             var generator = HttpFactory.Current.Get<ResponseWriter>();
-            generator.SendHeaders(context, response);
-            generator.SendBody(context, stream);
+            //generator.SendHeaders(context, response);
+            //generator.SendBody(context, stream);
+            generator.SendFile(context, response, stream);
         }
 
         #region IModule Members
