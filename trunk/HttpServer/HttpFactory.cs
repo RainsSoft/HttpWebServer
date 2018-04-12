@@ -156,7 +156,7 @@ namespace HttpServer
             _headerFactory = new HeaderFactory();
             _headerFactory.AddDefaultParsers();
             //_methods[typeof (HeaderFactory)] = (type2, args) => _headerFactory;
-            _methods[typeof(HeaderFactory)] = delegate(Type type2, object[] args) {
+            _methods[typeof(HeaderFactory)] = (Type type2, object[] args)=> {
                 return _headerFactory;
             };
             return _headerFactory;
@@ -172,7 +172,7 @@ namespace HttpServer
         {
             _messageFactory = new MessageFactory(Get<HeaderFactory>());
             //_methods[type] = (type2, args) => _messageFactory;
-            _methods[type] = delegate(Type type2, object[] args) {
+            _methods[type] = (Type type2, object[] args)=> {
                 return _messageFactory;
             };
             return _messageFactory;

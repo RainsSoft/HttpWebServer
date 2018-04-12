@@ -16,7 +16,9 @@ namespace HttpServer.Headers
             new Dictionary<string, IHeaderParser>(StringComparer.OrdinalIgnoreCase);
 
         private readonly ObjectPool<StringReader> _readers =
-            new ObjectPool<StringReader>(() => new StringReader(string.Empty));
+            new ObjectPool<StringReader>(() => {
+               return new StringReader(string.Empty);
+            });
 
         private readonly IHeaderParser _stringParser = new StringParser();
 
