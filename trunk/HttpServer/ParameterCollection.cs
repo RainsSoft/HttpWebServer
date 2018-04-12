@@ -143,7 +143,8 @@ namespace HttpServer
         public IParameter Get(string name)
         {
             IParameter parameter;
-            return _items.TryGetValue(name, out parameter) ? parameter : null;
+            return _items.TryGetValue(name.ToLower(), out parameter) ? parameter : null;       
+    
         }
 
         /// <summary>
@@ -157,7 +158,7 @@ namespace HttpServer
             if (!_items.TryGetValue(name, out parameter))
             {
                 parameter = new Parameter(name, value);
-                _items.Add(name, parameter);
+                _items.Add(name.ToLower(), parameter);
             }
             else
                 parameter.Values.Add(value);
@@ -171,7 +172,7 @@ namespace HttpServer
         /// <returns><c>true</c> if found; otherwise <c>false</c>;</returns>
         public bool Exists(string name)
         {
-            return _items.ContainsKey(name);
+            return _items.ContainsKey(name.ToLower());
         }
 
         #endregion
