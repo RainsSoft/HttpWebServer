@@ -41,21 +41,7 @@ namespace HttpServer.Messages
             {
                 _logger.Error("Failed to flush context stream.", err);
             }
-        }
-        /*
-        /// <summary>
-        /// 发送字符串到客户端。采用UTF8编码。
-        /// 该次发送设定了ContentLength，一次性发送完毕。
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="str"></param>
-        public void SendString(IHttpContext context, string str) {
-            byte[] buf = Encoding.UTF8.GetBytes(str);
-            context.Response.ContentLength.Value = buf.Length;
-            context.Response.Body.Write(buf, 0, buf.Length);
-            Send(context, context.Response);
-        }
-        */
+        }       
         /// <summary>
         /// 发送Xml字符串到客户端。采用UTF8编码。
         /// 该次发送设定了Content-Type,ContentLength，一次性发送完毕。
@@ -224,7 +210,7 @@ namespace HttpServer.Messages
             }
         }
         /// <summary>
-        /// 
+        /// 发送文件 加上文件头UTF8_BOM:0xEF 0xBB 0xBF
         /// </summary>
         /// <param name="context"></param>
         /// <param name="response"></param>
@@ -232,9 +218,10 @@ namespace HttpServer.Messages
         /// <param name="stream"></param>
         /// <param name="bom">UTF8_BOM:0xEF 0xBB 0xBF</param>
         public void SendFile(IHttpContext context, IResponse response, string attachmentname, Stream stream, byte[] bom) {
-            stream.Flush();
+            //stream.Flush();
             stream.Seek(0, SeekOrigin.Begin);
-            response.ContentLength.Value = stream.Length;
+            int addBytes = (bom != null ? bom.Length : 0);
+            response.ContentLength.Value = stream.Length + addBytes;
             //
             string oldctvalue = response.ContentType.Value;
             response.ContentType.Value = "application/octet-stream";
