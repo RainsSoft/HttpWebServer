@@ -72,8 +72,8 @@ namespace HttpServer.Messages
             context.Response.ContentType = head;
 
             context.Response.ContentLength.Value = buf.Length;
-            context.Response.Add("Pragma", new PragmaHeader());
-            context.Response.Add("Expires", new ExpiresHeader());
+            //context.Response.Add("Pragma", new PragmaHeader());
+            //context.Response.Add("Expires", new ExpiresHeader());
             context.Response.Body.Write(buf, 0, buf.Length);
 
             Send(context, context.Response);
@@ -87,8 +87,8 @@ namespace HttpServer.Messages
             head.Value = "text/json; charset=utf-8";
             context.Response.ContentType = head;
             context.Response.ContentLength.Value = buf.Length;
-            context.Response.Add("Pragma", new PragmaHeader());
-            context.Response.Add("Expires", new ExpiresHeader());
+            //context.Response.Add("Pragma", new PragmaHeader());
+            //context.Response.Add("Expires", new ExpiresHeader());
             context.Response.Body.Write(buf, 0, buf.Length);
             Send(context, context.Response);
         }
@@ -174,7 +174,8 @@ namespace HttpServer.Messages
                     sb.Append("\r\n");
                 }
             }
-
+            context.Response.Add("Pragma", new PragmaHeader());
+            context.Response.Add("Expires", new ExpiresHeader());
             foreach (IHeader header in response)
                 sb.AppendFormat("{0}: {1}\r\n", header.Name, header.HeaderValue);
 
