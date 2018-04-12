@@ -126,7 +126,7 @@ namespace HttpServer.Resources
 
             foreach (Mapping mapping in _mappings)
             {
-                if (!path.StartsWith(mapping.UriPath)) continue;
+                if (!path.StartsWith(mapping.UriPath, StringComparison.OrdinalIgnoreCase)) continue;
                 path = path.Remove(0, mapping.UriPath.Length);
                 path = path.Replace("/", PathSeparator);
                 return mapping.AbsolutePath + path + fileName;
