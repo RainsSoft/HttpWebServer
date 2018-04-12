@@ -1,0 +1,15 @@
+
+namespace Spark.Web.Mvc
+{
+	/*
+    public class DefaultCacheServiceProvider : ICacheServiceProvider
+    {
+        public ICacheService GetCacheService(RequestContext context)
+        {
+            if (context.HttpContext != null && context.HttpContext.Cache != null)
+                return new DefaultCacheService(context.HttpContext.Cache);
+            return null;
+        }
+    }
+	 * */
+}

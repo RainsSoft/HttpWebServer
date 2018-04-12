@@ -1,0 +1,35 @@
+﻿<viewdata whom="string" />
+
+
+<p>Hello ${whom}</p>
+
+<form method="post" action="/user/index/">
+FirstName:<br />
+<input type="text" name="FirstName" /><br />
+LastName:<br />
+<input type="text" name="LastName" /><br />
+<input type="submit" /><br />
+</form>
+<br />
+<p>&nbsp;</p>
+
+<div id="subcontent">
+This will be replace with data that
+automatically do not get a master layout (since it's a ajax request),
+</div>
+
+<p>&nbsp;</p>
+
+<script type="text/javascript">
+function getAjax()
+{
+	var req = new XMLHttpRequest();
+	req.onreadystatechange = function() {document.getElementById("subcontent").innerHTML=req.responseText; };
+	req.open("POST", "/user/info/");
+	req.setRequestHeader("X-Requested-With","XMLHttpRequest");
+	req.send(null);
+}
+</script>
+<form>
+<input type="button" onclick="getAjax()" value="Get ajax content" />
+</form>
