@@ -42,6 +42,7 @@ namespace HttpServer.Messages
                 _logger.Error("Failed to flush context stream.", err);
             }
         }
+        /*
         /// <summary>
         /// 发送字符串到客户端。采用UTF8编码。
         /// 该次发送设定了ContentLength，一次性发送完毕。
@@ -50,6 +51,25 @@ namespace HttpServer.Messages
         /// <param name="str"></param>
         public void SendString(IHttpContext context, string str) {
             byte[] buf = Encoding.UTF8.GetBytes(str);
+            context.Response.ContentLength.Value = buf.Length;
+            context.Response.Body.Write(buf, 0, buf.Length);
+            Send(context, context.Response);
+        }
+        */
+        /// <summary>
+        /// 发送Xml字符串到客户端。采用UTF8编码。
+        /// 该次发送设定了Content-Type,ContentLength，一次性发送完毕。
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="str"></param>
+        public void SendXmlString(IHttpContext context, string str) {
+            byte[] buf = Encoding.UTF8.GetBytes(str);
+            if (context.Response.Headers["Content-Type"] != null) {
+
+            }
+            Headers.ContentTypeHeader head = new ContentTypeHeader("Content-Type");
+            head.Value = "text/xml; charset=utf-8";
+            context.Response.ContentType = head;
             context.Response.ContentLength.Value = buf.Length;
             context.Response.Body.Write(buf, 0, buf.Length);
             Send(context, context.Response);
