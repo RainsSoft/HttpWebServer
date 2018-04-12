@@ -16,7 +16,7 @@ namespace HttpServer.Logging
     public sealed class ConsoleAndTextLogger : ILogger
     {
         private readonly ILogFilter _filter;
-        private static StreamWriter m_StreamWriter;
+        private static TextWriter m_StreamWriter;
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsoleAndTextLogger"/> class.
         /// </summary>
