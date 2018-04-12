@@ -41,11 +41,18 @@ namespace HttpServer.Headers
         {
             get { return _parameters; }
         }
-
+        private string m_Value = string.Empty;
         /// <summary>
         /// Gets content type.
         /// </summary>
-        public string Value { get; set; }
+        public string Value {
+            get {
+                return m_Value;
+            }
+            set {
+                m_Value = value;
+            }
+        }
 
         /// <summary>
         /// Returns data formatted as a HTTP header value.

@@ -50,9 +50,9 @@ namespace HttpServer.Messages
         {
             _context = context;
             HttpVersion = request.HttpVersion;
-            Reason = "Made by Jonas Gauffin";
+            Reason = "Made by Jonas Gauffin and RainsSoft";
             Status = HttpStatusCode.OK;
-            ContentType = new ContentTypeHeader("text/html");
+            ContentType = new ContentTypeHeader("text/html; charset=utf-8");
         	Encoding = request.Encoding;
             _headers = CreateHeaderCollection();
         }
