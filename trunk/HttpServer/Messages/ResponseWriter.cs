@@ -42,7 +42,18 @@ namespace HttpServer.Messages
                 _logger.Error("Failed to flush context stream.", err);
             }
         }
-
+        /// <summary>
+        /// 发送字符串到客户端。采用UTF8编码。
+        /// 该次发送设定了ContentLength，一次性发送完毕。
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="str"></param>
+        public void SendString(IHttpContext context, string str) {
+            byte[] buf = Encoding.UTF8.GetBytes(str);
+            context.Response.ContentLength.Value = buf.Length;
+            context.Response.Body.Write(buf, 0, buf.Length);
+            Send(context, context.Response);
+        }
         /// <summary>
         /// Converts and sends a string.
         /// </summary>
