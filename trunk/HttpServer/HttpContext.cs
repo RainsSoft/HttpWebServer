@@ -24,7 +24,7 @@ namespace HttpServer
 	{
 	    private static readonly ObjectPool<byte[]> Buffers = new ObjectPool<byte[]>(() => new byte[65535]);
 		[ThreadStatic] private static IHttpContext _context;
-		private readonly byte[] _buffer;
+        private readonly byte[] _buffer ;
 		private readonly ILogger _logger = LogFactory.CreateLogger(typeof (HttpContext));
 		private Timer _keepAlive;
 		private int _keepAliveTimeout = 100000; // 100 seconds.

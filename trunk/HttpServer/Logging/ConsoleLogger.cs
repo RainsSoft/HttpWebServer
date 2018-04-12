@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
-
+using System.IO;
 namespace HttpServer.Logging
 {
     /// <summary>
@@ -13,19 +13,20 @@ namespace HttpServer.Logging
     /// and includes a 3-level stack trace (in debug mode)
     /// </remarks>
     /// <seealso cref="ILogger"/>
-    public sealed class ConsoleLogger : ILogger
+    public sealed class ConsoleAndTextLogger : ILogger
     {
         private readonly ILogFilter _filter;
-
+        private StreamWriter m_StreamWriter;
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConsoleLogger"/> class.
+        /// Initializes a new instance of the <see cref="ConsoleAndTextLogger"/> class.
         /// </summary>
         /// <param name="loggingType">Type being logged.</param>
         /// <param name="filter">Log filter.</param>
-        public ConsoleLogger(Type loggingType, ILogFilter filter)
+        public ConsoleAndTextLogger(Type loggingType, ILogFilter filter)
         {
             _filter = filter;
             LoggingType = loggingType;
+            m_StreamWriter = new StreamWriter("HttpServer.log", true, Encoding.UTF8);
         }
 
         /// <summary>
@@ -59,6 +60,31 @@ namespace HttpServer.Logging
             return ConsoleColor.Yellow;
         }
 
+        private void WriteMsg(string msg, LogLevel level) {
+            switch (level) {
+                case LogLevel.Debug:
+                    m_StreamWriter.Write(" [D] " + msg);
+                    break;
+                case LogLevel.Error:
+                    m_StreamWriter.Write(" [E] " + msg);
+                    break;
+                case LogLevel.Fatal:
+                    m_StreamWriter.Write(" [F] " + msg);
+                    break;
+                case LogLevel.Info:
+                    m_StreamWriter.Write(" [I] " + msg);
+                    break;
+                case LogLevel.Trace:
+                    m_StreamWriter.Write(" [T] " + msg);
+                    break;
+                case LogLevel.Warning:
+                    m_StreamWriter.Write(" [W] " + msg);
+                    break;
+                default:
+                    m_StreamWriter.Write(" [I] " + msg);
+                    break;
+            }
+        }
         private void Write(LogLevel level, string message, Exception exception)
         {
             if (_filter != null && !_filter.CanLog(level, LoggingType))
@@ -97,9 +123,11 @@ namespace HttpServer.Logging
             sb.AppendLine();
             sb.Append(exception);
 
+            string msg = sb.ToString();
             Console.ForegroundColor = GetColor(level);
-            Console.WriteLine(sb.ToString());
+            Console.WriteLine(msg);
             Console.ForegroundColor = ConsoleColor.Gray;
+            WriteMsg(msg, level);
         }
 
         /// <summary>
@@ -142,9 +170,11 @@ namespace HttpServer.Logging
 #endif
             sb.Append(message);
 
+            string msg = sb.ToString();
             Console.ForegroundColor = GetColor(level);
-            Console.WriteLine(sb.ToString());
+            Console.WriteLine(msg);
             Console.ForegroundColor = ConsoleColor.Gray;
+            WriteMsg(msg, level);
         }
 
         #region ILogger Members

@@ -31,7 +31,7 @@ namespace HttpServer.Logging
         /// </remarks>
         public ILogger CreateLogger(Type type)
         {
-            return new ConsoleLogger(type, _filter);
+            return new ConsoleAndTextLogger(type, _filter);
         }
 
         #endregion
