@@ -77,5 +77,57 @@ namespace HttpServer.Headers
         }
 
         #endregion
+
+        /// <summary>
+        /// 支持火狐浏览器过期头
+        /// </summary>
+        public class PragmaHeader : IHeader
+        {
+            /// <summary>
+            /// Header name
+            /// </summary>
+            public const string NAME = "Pragma";
+
+            #region IHeader Members
+
+            /// <summary>
+            /// Gets header name
+            /// </summary>
+            public string Name {
+                get { return NAME; }
+            }
+
+            public string HeaderValue {
+                get { return "no-cache"; }
+            }
+
+            #endregion
+        }
+        /// <summary>
+        /// 支持IE浏览器过期头
+        /// </summary>
+        public class ExpiresHeader : IHeader
+        {
+
+            /// <summary>
+            /// Header name
+            /// </summary>
+            public const string NAME = "Expires";
+
+            #region IHeader Members
+
+            /// <summary>
+            /// Gets header name
+            /// </summary>
+            public string Name {
+                get { return NAME; }
+            }
+
+            public string HeaderValue {
+                get { return "Thu, 01 Jan 1970 00:00:00 GMT"; }
+            }
+
+            #endregion
+        }
     }
 }
