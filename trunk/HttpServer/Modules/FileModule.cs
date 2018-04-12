@@ -95,6 +95,7 @@ namespace HttpServer.Modules
         {
             ContentTypes.Add("default", new ContentTypeHeader("application/octet-stream"));
             ContentTypes.Add("txt", new ContentTypeHeader("text/plain;charset=UTF-8"));
+            ContentTypes.Add("xml", new ContentTypeHeader("text/xml;charset=UTF-8"));
             ContentTypes.Add("html", new ContentTypeHeader("text/html;charset=UTF-8"));
             ContentTypes.Add("htm", new ContentTypeHeader("text/html;charset=UTF-8"));
             ContentTypes.Add("jpg", new ContentTypeHeader("image/jpg"));
@@ -105,6 +106,7 @@ namespace HttpServer.Modules
 
             ContentTypes.Add("ico", new ContentTypeHeader("image/vnd.microsoft.icon"));
             ContentTypes.Add("css", new ContentTypeHeader("text/css"));
+            ContentTypes.Add("exe", new ContentTypeHeader("application/octet-stream"));
             ContentTypes.Add("gzip", new ContentTypeHeader("application/x-gzip"));
             ContentTypes.Add("zip", new ContentTypeHeader("multipart/x-zip"));
             ContentTypes.Add("tar", new ContentTypeHeader("application/x-tar"));
@@ -171,22 +173,23 @@ namespace HttpServer.Modules
                     return ProcessingResult.Continue;
 
                 response.ContentType = header;
-
+                //说明: 在某些系统上，总是会出现页面刷不出来的情况，不知道和这个有没有关系？
+                //暂时先注释了。
                 // Only send file if it has not been modified.
-                var browserCacheDate = request.Headers["If-Modified-Since"] as DateHeader;
-                if (browserCacheDate != null)
-                {
-                    DateTime since = browserCacheDate.Value.ToUniversalTime();
-                    DateTime modified = resource.ModifiedAt;
+                //var browserCacheDate = request.Headers["If-Modified-Since"] as DateHeader;
+                //if (browserCacheDate != null)
+                //{
+                //    DateTime since = browserCacheDate.Value.ToUniversalTime();
+                //    DateTime modified = resource.ModifiedAt;
 
-                    // Allow for file systems with subsecond time stamps
-                    modified = new DateTime(modified.Year, modified.Month, modified.Day, modified.Hour, modified.Minute, modified.Second, modified.Kind);
-                    if (since >= modified)
-                    {
-                        response.Status = HttpStatusCode.NotModified;
-                        return ProcessingResult.SendResponse;
-                    }
-                }
+                //    // Allow for file systems with subsecond time stamps
+                //    modified = new DateTime(modified.Year, modified.Month, modified.Day, modified.Hour, modified.Minute, modified.Second, modified.Kind);
+                //    if (since >= modified)
+                //    {
+                //        response.Status = HttpStatusCode.NotModified;
+                //        return ProcessingResult.SendResponse;
+                //    }
+                //}
 
                 using (resource.Stream)
                 {
