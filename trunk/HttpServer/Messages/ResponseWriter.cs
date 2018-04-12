@@ -227,7 +227,16 @@ namespace HttpServer.Messages
             response.ContentType.Value = "application/octet-stream";
 
             //
-            string fname = System.Web.HttpUtility.UrlEncode(attachmentname);
+            string fname = string.Empty;
+            //如果是ie,那就要utf8编码
+            if (context.Response.Headers["User-Agent"] != null && context.Response.Headers["User-Agent"].HeaderValue != null) {
+                if (context.Response.Headers["User-Agent"].HeaderValue.IndexOf("msie", StringComparison.OrdinalIgnoreCase) > -1) {
+                    fname = System.Web.HttpUtility.UrlEncode(attachmentname, Encoding.UTF8);
+                }
+                else {
+                    fname = attachmentname;
+                }
+            }
             context.Response.Add("Content-disposition", new SendFileHeader(fname));
             //if (context.Response.Encoding is UTF8Encoding) {
             //    stream.Position = 0;
