@@ -176,7 +176,7 @@ namespace HttpServer.Messages
             }
 
             foreach (IHeader header in response)
-                sb.AppendFormat("{0}: {1}\r\n", header.Name, header);
+                sb.AppendFormat("{0}: {1}\r\n", header.Name, header.HeaderValue);
 
             sb.Append("\r\n");
             Send(context, sb.ToString(), response.Encoding);
