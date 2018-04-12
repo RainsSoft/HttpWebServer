@@ -16,7 +16,7 @@ namespace HttpServer.Logging
     public sealed class ConsoleAndTextLogger : ILogger
     {
         private readonly ILogFilter _filter;
-        private StreamWriter m_StreamWriter;
+        private static StreamWriter m_StreamWriter;
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsoleAndTextLogger"/> class.
         /// </summary>
@@ -26,7 +26,9 @@ namespace HttpServer.Logging
         {
             _filter = filter;
             LoggingType = loggingType;
-            m_StreamWriter = new StreamWriter("HttpServer.log", true, Encoding.UTF8);
+            if (m_StreamWriter == null) {
+                m_StreamWriter = StreamWriter.Synchronized(new StreamWriter("HttpServer.log", true, Encoding.UTF8));
+            }
         }
 
         /// <summary>
