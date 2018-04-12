@@ -54,7 +54,7 @@ namespace HttpServer
         private ArrayParameterCollection GetItem(string name)
         {
             IParameter parameter;
-            if (!_items.TryGetValue(name, out parameter))
+            if (!_items.TryGetValue(name.ToLower(), out parameter))
                 return null;
 
             return (ArrayParameterCollection) parameter;
@@ -101,10 +101,10 @@ namespace HttpServer
                 if (mine == null)
                 {
                     mine = new ArrayParameterCollection(myName, string.Empty);
-                    _items.Add(myName, mine);
+                    _items.Add(myName.ToLower(), mine);
                 }
 
-                mine.Add(name, value);
+                mine.Add(name.ToLower(), value);
                 return;
             }
 
@@ -113,7 +113,7 @@ namespace HttpServer
             if (current == null)
             {
                 current = new ArrayParameterCollection(name, value);
-                _items.Add(name, current);
+                _items.Add(name.ToLower(), current);
                 return;
             }
 
@@ -128,7 +128,7 @@ namespace HttpServer
         /// <returns><c>true</c> if found; otherwise <c>false</c>;</returns>
         public bool Exists(string name)
         {
-            return _items.ContainsKey(name);
+            return _items.ContainsKey(name.ToLower());
         }
 
         /// <summary>
