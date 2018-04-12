@@ -74,6 +74,18 @@ namespace HttpServer.Messages
             context.Response.Body.Write(buf, 0, buf.Length);
             Send(context, context.Response);
         }
+        public void SendJson(IHttpContext context, string jsonString) {
+            byte[] buf = Encoding.UTF8.GetBytes(jsonString);
+            if (context.Response.Headers["Content-Type"] != null) {
+
+            }
+            Headers.ContentTypeHeader head = new ContentTypeHeader("Content-Type");
+            head.Value = "text/json; charset=utf-8";
+            context.Response.ContentType = head;
+            context.Response.ContentLength.Value = buf.Length;
+            context.Response.Body.Write(buf, 0, buf.Length);
+            Send(context, context.Response);
+        }
         /// <summary>
         /// Converts and sends a string.
         /// </summary>
