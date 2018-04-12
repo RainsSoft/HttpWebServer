@@ -223,8 +223,11 @@ namespace HttpServer
 
             OnAuthentication(context);
             OnBeforeRequest(context);
-            PrepareRequest(this, e);
-
+            //PrepareRequest(this, e);
+            InternalPrepareRequest(this, e);
+            ProcessingResult ret = OnPrepareRequest(context, e);
+            if (ProcessResult(ret, e))
+                return ret;
 
             if (e.Request.ContentLength.Value > 0)
                 DecodeBody(e.Request);
@@ -245,7 +248,14 @@ namespace HttpServer
 
             return ProcessingResult.Continue;
         }
+        protected virtual ProcessingResult OnPrepareRequest(RequestContext context, RequestEventArgs e) {
 
+            PrepareRequest(this, e);
+            if (e.IsHandled) {
+                return ProcessingResult.SendResponse;
+            }
+            return ProcessingResult.Continue;
+        }
         private void Listener_OnErrorPage(object sender, ErrorPageEventArgs e)
         {
             _server = this;
@@ -487,7 +497,10 @@ namespace HttpServer
         /// have tried to process the request.
         /// </remarks>
         public event EventHandler<RequestEventArgs> RequestReceived = delegate { };
-
+        /// <summary>
+        /// 在PrepareRequest之前调用
+        /// </summary>
+        internal event EventHandler<RequestEventArgs> InternalPrepareRequest = delegate { };
         /// <summary>
         /// Invoked *before* the web server has tried to handled the request.
         /// </summary>
