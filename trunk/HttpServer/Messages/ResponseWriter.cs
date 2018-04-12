@@ -64,6 +64,22 @@ namespace HttpServer.Messages
 
             Send(context, context.Response);
         }
+        public void SendString(IHttpContext context, string str) {
+            byte[] buf = Encoding.UTF8.GetBytes(str);
+            if (context.Response.Headers["Content-Type"] != null) {
+
+            }
+            Headers.ContentTypeHeader head = new ContentTypeHeader("Content-Type");
+            head.Value = "text/html; charset=utf-8";
+            context.Response.ContentType = head;
+
+            context.Response.ContentLength.Value = buf.Length;
+            //context.Response.Add("Pragma",new PragmaHeader());
+            //context.Response.Add("Expires",new ExpiresHeader());
+            context.Response.Body.Write(buf, 0, buf.Length);
+
+            Send(context, context.Response);
+        }
         public void SendJson(IHttpContext context, string jsonString) {
             byte[] buf = Encoding.UTF8.GetBytes(jsonString);
             if (context.Response.Headers["Content-Type"] != null) {
@@ -75,6 +91,12 @@ namespace HttpServer.Messages
             context.Response.ContentLength.Value = buf.Length;
             //context.Response.Add("Pragma", new PragmaHeader());
             //context.Response.Add("Expires", new ExpiresHeader());
+
+            //using (System.IO.Compression.GZipStream gzip = new System.IO.Compression.GZipStream(context.Response.Body, System.IO.Compression.CompressionMode.Compress,true)) {
+            //    gzip.Write(buf, 0, buf.Length);
+            //    gzip.Flush();
+            //}
+
             context.Response.Body.Write(buf, 0, buf.Length);
             Send(context, context.Response);
         }
@@ -132,6 +154,9 @@ namespace HttpServer.Messages
         /// <param name="context">Content used to send headers.</param>
         public void SendHeaders(IHttpContext context, IResponse response)
         {
+            if (response == null) {
+                _logger.Fatal("SendHeaders response为空");
+            }
             var sb = new StringBuilder();
             sb.AppendFormat("{0} {1} {2}\r\n", response.HttpVersion, (int) response.Status, response.Reason);
 
@@ -139,6 +164,9 @@ namespace HttpServer.Messages
         	//response.ContentType.Parameters["charset"] = response.Encoding.WebName;
 
             // go through all property headers.
+            if (response.ContentType == null) {
+                _logger.Fatal("SendHeaders response.ContentType为空");
+            }
             sb.AppendFormat("{0}: {1}\r\n", response.ContentType.Name, response.ContentType);
             sb.AppendFormat("{0}: {1}\r\n", response.ContentLength.Name, response.ContentLength);
             sb.AppendFormat("{0}: {1}\r\n", response.Connection.Name, response.Connection);
@@ -159,6 +187,9 @@ namespace HttpServer.Messages
                         sb.AppendFormat(";path={0}", cookie.Path);
                     sb.Append("\r\n");
                 }
+            }
+            if (context.Response == null) {
+                _logger.Fatal("SendHeaders context.Response为空");
             }
             context.Response.Add("Pragma", new PragmaHeader());
             context.Response.Add("Expires", new ExpiresHeader());
@@ -229,13 +260,16 @@ namespace HttpServer.Messages
             //
             string fname = string.Empty;
             //如果是ie,那就要utf8编码
-            if (context.Response.Headers["User-Agent"] != null && context.Response.Headers["User-Agent"].HeaderValue != null) {
-                if (context.Response.Headers["User-Agent"].HeaderValue.IndexOf("msie", StringComparison.OrdinalIgnoreCase) > -1) {
+            if (context.Request.Headers["User-Agent"] != null && context.Request.Headers["User-Agent"].HeaderValue != null) {
+                if (context.Request.Headers["User-Agent"].HeaderValue.IndexOf("msie", StringComparison.OrdinalIgnoreCase) > -1) {
                     fname = System.Web.HttpUtility.UrlEncode(attachmentname, Encoding.UTF8);
                 }
                 else {
                     fname = attachmentname;
                 }
+            }
+            else {
+                fname = attachmentname;
             }
             context.Response.Add("Content-disposition", new SendFileHeader(fname));
             //if (context.Response.Encoding is UTF8Encoding) {

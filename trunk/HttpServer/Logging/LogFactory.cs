@@ -7,7 +7,7 @@ namespace HttpServer.Logging
     /// </summary>
     public static class LogFactory
     {
-        private static ILogFactory _factory = NullLogFactory.Instance;
+        private static ILogFactory _factory ;//= NullLogFactory.Instance;
         private static bool _isAssigned;
 
         /// <summary>
@@ -32,6 +32,12 @@ namespace HttpServer.Logging
         /// <returns>Logger for the specified type;</returns>
         public static ILogger CreateLogger(Type type)
         {
+            if (_factory == null) {
+                LogFilter lf = new LogFilter();
+                lf.AddStandardRules();
+                lf.AddType(type, LogLevel.Error);
+                _factory = NullLogFactory.Instance;// (lf);
+            }
             return _factory.CreateLogger(type);
         }
     }
