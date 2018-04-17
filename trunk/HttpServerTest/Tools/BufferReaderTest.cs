@@ -27,10 +27,10 @@ namespace HttpServerTest.Tools
         [Fact]
         private void TestReadLine()
         {
-            byte[] bytes = _encoding.GetBytes("Hej\r\npå\r\ndig\r\n\t multi.\r\n");
+            byte[] bytes = _encoding.GetBytes("Hej\r\np\r\ndig\r\n\t multi.\r\n");
             _reader.Assign(bytes, 0, bytes.Length);
             Assert.Equal("Hej", _reader.ReadLine());
-            Assert.Equal("på", _reader.ReadLine());
+            Assert.Equal("p", _reader.ReadLine());
             string temp = _reader.ReadLine();
             Assert.Equal("dig multi.", temp);
         }
